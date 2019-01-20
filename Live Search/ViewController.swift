@@ -61,13 +61,27 @@ extension ViewController : UITableViewDelegate, UITableViewDataSource {
         let location = countryNameArr[indexPath.row].replacingOccurrences(of: " ", with: "_")
         displayWikipageInSafariVC(for: location)
     }
+    
+    //MARK:- SafariVC search to wikipedia
+    func displayWikipageInSafariVC(for location: String) {
+        let baseURL = "https://en.wikipedia.org/wiki/"
+        let location = location.capitalized
+        let urlString = baseURL + location
+        
+        guard let url = URL(string: urlString) else { return }
+        
+        
+        let safariVC = SFSafariViewController(url: url)
+        present(safariVC, animated: true, completion: nil)
+    }
+
 }
 
 extension ViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         //grab the substring of the search text, up to and including the full search string and set it equal to search country array
-        searchCountry = countryNameArr.filter() {$0.prefix(searchText.count) == searchText}
+        searchCountry = countryNameArr.filter() {$0.lowercased().prefix(searchText.count) == searchText.lowercased()}
         isSearching = true
         tableView.reloadData()
     }
@@ -82,20 +96,6 @@ extension ViewController: UISearchBarDelegate {
             }
         }
     }
-    
-    //MARK:- SafariVC search to wikipedia
-    func displayWikipageInSafariVC(for location: String) {
-        let baseURL = "https://en.wikipedia.org/wiki/"
-        let location = location
-        let urlString = baseURL + location
-        guard let url = URL(string: urlString) else { return }
-        print(url)
-        
-        
-        let safariVC = SFSafariViewController(url: url)
-        present(safariVC, animated: true, completion: nil)
-    }
-    
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         //reset the table view
